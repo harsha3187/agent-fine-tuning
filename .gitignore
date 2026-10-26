@@ -1,0 +1,20 @@
+.azure/
+.env*
+!.env.example
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+
+# Generated or resource-specific outputs
+.foundry/results/
+.foundry/hillclimb/
+optimize/work/
+rft/jobs/**/*-events.jsonl
+agents/.agent_configs/
+agents/azd-ai-*.log
+# Vendored by the agents prepackage hook
+agents/shoppingbench_foundry/

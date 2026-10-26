@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": {
+      "value": "${AZURE_ENV_NAME}"
+    },
+    "location": {
+      "value": "${AZURE_LOCATION=swedencentral}"
+    },
+    "searchLocation": {
+      "value": "${AZURE_SEARCH_LOCATION=swedencentral}"
+    },
+    "deploymentProfile": {
+      "value": "${SHOPPINGBENCH_DEPLOYMENT_PROFILE=benchmark}"
+    },
+    "shoppingbenchApiToken": {
+      "value": "${SHOPPINGBENCH_API_TOKEN}"
+    },
+    "webSearchOpenAiBaseUrl": {
+      "value": "${WEB_SEARCH_OPENAI_BASE_URL=}"
+    },
+    "webSearchModelDeploymentName": {
+      "value": "${WEB_SEARCH_MODEL_DEPLOYMENT_NAME=}"
+    },
+    "rftGraderModelDeploymentName": {
+      "value": "${RFT_GRADER_MODEL_DEPLOYMENT_NAME=}"
+    }
+  }
+}
