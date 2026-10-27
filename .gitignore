@@ -23,3 +23,4 @@ agents/shoppingbench_foundry/
 data/full-catalog/documents.jsonl.gz
 data/full-catalog/documents.jsonl
 data/full-catalog/offsets.pkl
+data/synthetic/search-documents.jsonl
