@@ -59,3 +59,32 @@ def test_rft_validation_is_disjoint_from_rft_train_and_graded_as_voucher_variant
         assert train.isdisjoint({r["case_group"] for r in validation})
         assert all(r["task"] == ("voucher" if task == "compound" else task) for r in validation)
         assert all("voucher" in r for r in validation) == (task in ("voucher", "compound"))
+
+
+def test_combined_index_has_no_id_conflicts_or_gold_title_twins():
+    docs = SYN / "search-documents.jsonl"
+    if not docs.exists():  # gitignored build artifact
+        import pytest
+
+        pytest.skip("search-documents.jsonl not built")
+    from shoppingbench_foundry.grading import _normalize
+
+    prepared = [json.loads(x)["product"] for x in
+                (ROOT / "data" / "prepared" / "search-documents.jsonl").read_text("utf-8").split("\n") if x.strip()]
+    synthetic = [json.loads(x)["product"] for x in docs.read_text("utf-8").split("\n") if x.strip()]
+    synthetic_ids = {str(p["product_id"]) for p in synthetic}
+    assert not {str(p["product_id"]) for p in prepared} & synthetic_ids
+    titles: dict[str, set[str]] = {}
+    for p in prepared + synthetic:
+        titles.setdefault(_normalize(p["title"]), set()).add(str(p["product_id"]))
+    gold_files = [SYN / "splits" / s / f"{t}.jsonl" for s in ("train", "val", "heldout") for t in TASKS]
+    gold_files += [ROOT / "data" / "source" / f"{t}.jsonl" for t in ("product", "shop", "voucher")]
+    for path in gold_files:
+        for row in _rows(path):
+            rewards = row["reward"] if isinstance(row["reward"], list) else [row["reward"]]
+            for reward in rewards:
+                for title in reward["title"]:
+                    twins = titles.get(_normalize(title), set()) - {str(reward["product_id"])}
+                    if path.parent.name == "source":  # original cases may not be polluted by new docs
+                        twins &= synthetic_ids
+                    assert not twins, (path.name, reward["product_id"])
