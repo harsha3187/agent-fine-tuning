@@ -18,3 +18,8 @@ agents/.agent_configs/
 agents/azd-ai-*.log
 # Vendored by the agents prepackage hook
 agents/shoppingbench_foundry/
+
+# full upstream catalog (1.4 GB)
+data/full-catalog/documents.jsonl.gz
+data/full-catalog/documents.jsonl
+data/full-catalog/offsets.pkl
