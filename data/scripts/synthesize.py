@@ -213,7 +213,7 @@ def build_plan(task: str, products: list[dict], rng: random.Random, voucher_type
     if total_price < 100:
         return None
     compound = task == "compound"
-    threshold = rng.randint(int(total_price * (0.6 if compound else 0.1)), int(total_price * (0.9 if compound else 0.9)))
+    threshold = rng.randint(int(total_price * (0.6 if compound else 0.1)), int(total_price * 0.9))
     desc = ("1. The voucher only applies to the products from the same shop."
             if voucher_type == "shop" else "1. The voucher applies to all products.")
     desc += f"\n2. It is valid only when the total price of the products exceeds `{threshold}`."
@@ -266,7 +266,7 @@ def main() -> int:
             "<|requirements|>", requirements_block(plan["reqs"]))
         try:
             query = draw_query(client, args.model, prompt)
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001 - skip any failed case, e.g. content filter
             print(f"skipped case: {type(exc).__name__}", file=sys.stderr)
             return None
         if not query:

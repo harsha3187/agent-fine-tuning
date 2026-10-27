@@ -8,7 +8,7 @@ from collections import defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
-from synthesize import CATALOG, ROOT, build_index  # noqa: E402
+from synthesize import CATALOG, ROOT, build_index
 
 SYN = ROOT / "data" / "synthetic"
 TASKS = ("product", "shop", "voucher", "compound")
