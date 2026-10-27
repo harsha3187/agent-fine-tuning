@@ -48,7 +48,7 @@ def components(cases: list[dict]) -> list[list[int]]:
 def main() -> None:
     cases = []
     for task in TASKS:
-        for line in (SYN / f"{task}.jsonl").read_text(encoding="utf-8").splitlines():
+        for line in (SYN / "validated" / f"{task}.jsonl").read_text(encoding="utf-8").split("\n"):
             if line.strip():
                 cases.append(json.loads(line))
     rng = random.Random(11)

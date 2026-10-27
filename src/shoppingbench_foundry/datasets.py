@@ -16,9 +16,9 @@ EXPECTED_COUNTS = {"product": 250, "shop": 250, "voucher": 250, "web": 150}
 # Compound cases carry voucher metadata and are graded as voucher tasks.
 SYNTHETIC_TASKS = ("product", "shop", "voucher", "compound")
 SYNTHETIC_EXPECTED_COUNTS = {
-    "train": {"product": 408, "shop": 403, "voucher": 408, "compound": 343},
-    "val": {"product": 43, "shop": 55, "voucher": 59, "compound": 39},
-    "heldout": {"product": 49, "shop": 56, "voucher": 53, "compound": 38},
+    "train": {"product": 393, "shop": 404, "voucher": 377, "compound": 327},
+    "val": {"product": 50, "shop": 41, "voucher": 44, "compound": 53},
+    "heldout": {"product": 55, "shop": 54, "voucher": 47, "compound": 32},
 }
 
 
