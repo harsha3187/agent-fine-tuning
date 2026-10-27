@@ -27,6 +27,7 @@ agents = [
 dev = [
   "pytest>=8.3.0",
   "pytest-asyncio>=0.25.0",
+  "mypy>=1.10",
   "ruff>=0.11.0",
 ]
 
@@ -38,6 +39,13 @@ pythonpath = [".", "src"]
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+
+# Baseline: the inherited codebase has typing gaps in these categories.
+# Tighten by removing codes as they are fixed.
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+disable_error_code = ["arg-type", "union-attr", "var-annotated", "operator", "no-redef", "assignment"]
 
 [tool.setuptools]
 package-dir = {"" = "src"}
