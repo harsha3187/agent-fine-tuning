@@ -12,6 +12,27 @@ TASK_FILES = {
     "web": "web.jsonl",
 }
 EXPECTED_COUNTS = {"product": 250, "shop": 250, "voucher": 250, "web": 150}
+# Synthetic cases live outside data/source so the upstream benchmark stays untouched.
+# Compound cases carry voucher metadata and are graded as voucher tasks.
+SYNTHETIC_TASKS = ("product", "shop", "voucher", "compound")
+SYNTHETIC_EXPECTED_COUNTS = {
+    "train": {"product": 408, "shop": 403, "voucher": 408, "compound": 343},
+    "val": {"product": 43, "shop": 55, "voucher": 59, "compound": 39},
+    "heldout": {"product": 49, "shop": 56, "voucher": 53, "compound": 38},
+}
+
+
+def validate_synthetic_dataset(synthetic_dir: Path) -> dict[str, dict[str, int]]:
+    counts = {}
+    for split in SYNTHETIC_EXPECTED_COUNTS:
+        counts[split] = {}
+        for task in SYNTHETIC_TASKS:
+            path = synthetic_dir / "splits" / split / f"{task}.jsonl"
+            with path.open(encoding="utf-8") as handle:
+                counts[split][task] = sum(1 for line in handle if line.strip())
+    if counts != SYNTHETIC_EXPECTED_COUNTS:
+        raise ValueError(f"Unexpected synthetic dataset counts: {counts}")
+    return counts
 
 
 def load_task_rows(data_dir: Path, task: str) -> list[dict[str, Any]]:

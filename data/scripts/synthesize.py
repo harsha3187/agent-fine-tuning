@@ -183,7 +183,8 @@ def plan_cases(task: str, total: int, seed: int) -> list[dict]:
                     shop = rng.choice(eligible_shops)
                     if shop in used_shops:
                         continue
-                    picks = [rows[i] for i in rng.sample(shops[shop], rng.randint(2, 4))]
+                    count = rng.randint(3, 4) if task == "compound" else rng.randint(2, 4)
+                    picks = [rows[i] for i in rng.sample(shops[shop], min(count, len(shops[shop])))]
                     if any(p[0] in used_products for p in picks):
                         continue
                 products = [read_product(fh, p[2]) for p in picks]
@@ -197,7 +198,7 @@ def plan_cases(task: str, total: int, seed: int) -> list[dict]:
 
 
 def build_plan(task: str, products: list[dict], rng: random.Random, voucher_type: str | None) -> dict | None:
-    exclude = ("price",) if task == "voucher" else ()
+    exclude = ("price",) if task in ("voucher", "compound") else ()
     rewards, reqs = zip(*(target(p, rng, exclude) for p in products))
     rewards, reqs = list(rewards), list(reqs)
     if task == "product":
@@ -211,7 +212,8 @@ def build_plan(task: str, products: list[dict], rng: random.Random, voucher_type
     total_price = sum(p["price"] for p in products)
     if total_price < 100:
         return None
-    threshold = rng.randint(int(total_price * 0.1), int(total_price * 0.9))
+    compound = task == "compound"
+    threshold = rng.randint(int(total_price * (0.6 if compound else 0.1)), int(total_price * (0.9 if compound else 0.9)))
     desc = ("1. The voucher only applies to the products from the same shop."
             if voucher_type == "shop" else "1. The voucher applies to all products.")
     desc += f"\n2. It is valid only when the total price of the products exceeds `{threshold}`."
@@ -228,18 +230,20 @@ def build_plan(task: str, products: list[dict], rng: random.Random, voucher_type
         after = max(total_price * (1 - pct / 100.0), total_price - cap)
         desc += f"\n3. It provides a percentage discount of `{pct}%` with a cap of `{cap}`."
         voucher = {"discount_type": "percentage", "face_value": None, "discount": pct / 100.0, "cap": cap}
-    budget = math.ceil(after) + rng.randint(0, math.ceil(after * 0.1))
+    budget = math.ceil(after) + rng.randint(0, math.ceil(after * (0.03 if compound else 0.1)))
     voucher.update({"voucher_type": voucher_type, "threshold": threshold,
                     "price_after_voucher": after, "budget": budget})
     external = f"My budget is only `{budget}`, but I have a voucher with the following rules:\n{desc}"
-    return {"reward": rewards, "reqs": reqs, "task_text": "one or more products", "voucher": voucher,
+    task_text = ("one shop that sells all of these products, so that one same-shop voucher can be used"
+                 if compound else "one or more products")
+    return {"reward": rewards, "reqs": reqs, "task_text": task_text, "voucher": voucher,
             "external": external, "group": products[0]["shop_id"],
             "shop_ids": sorted({p["shop_id"] for p in products})}
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--task", choices=["product", "shop", "voucher"], required=True)
+    ap.add_argument("--task", choices=["product", "shop", "voucher", "compound"], required=True)
     ap.add_argument("--total", type=int, default=20)
     ap.add_argument("--seed", type=int, default=7)
     ap.add_argument("--model", default="gpt-5.6-luna")

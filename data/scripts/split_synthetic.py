@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from synthesize import CATALOG, ROOT, build_index  # noqa: E402
 
 SYN = ROOT / "data" / "synthetic"
-TASKS = ("product", "shop", "voucher")
+TASKS = ("product", "shop", "voucher", "compound")
 FRACTIONS = {"train": 0.80, "val": 0.10, "heldout": 0.10}
 SHOP_DISTRACTORS = 4
 RANDOM_DISTRACTORS = 3
