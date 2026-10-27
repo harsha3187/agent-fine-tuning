@@ -139,6 +139,20 @@ def target(product: dict, rng: random.Random, exclude: tuple[str, ...] = ()) -> 
     return reward, reqs
 
 
+_NUM = r"\d[\d,]*(?:\.\d+)?"
+_UNIT = r"(?:Philippine\s+)?(?:pesos?|PHP)\b"
+
+
+def normalize_currency(text: str) -> str:
+    """Express every price in the LLM-written text as `PHP <amount>` (catalog prices are PHP)."""
+    text = re.sub(rf"({_NUM})\s*(and|to|-|–)\s*({_NUM})\s*{_UNIT}", r"PHP \1 \2 PHP \3", text, flags=re.IGNORECASE)
+    text = re.sub(rf"₱\s*({_NUM})", r"PHP \1", text)
+    text = re.sub(rf"({_NUM})\s*{_UNIT}", r"PHP \1", text, flags=re.IGNORECASE)
+    text = re.sub(rf"\bPHP\s+({_NUM})\s+(and|to)\s+(?=\d)", r"PHP \1 \2 PHP ", text)
+    text = re.sub(r"\b(?:Philippine\s+)?pesos?\b", "PHP", text, flags=re.IGNORECASE)
+    return re.sub(r"\bPHP(?:\s+PHP)+\b", "PHP", text)
+
+
 def draw_query(client, model: str, prompt: str) -> str | None:
     resp = client.chat.completions.create(
         model=model, messages=[{"role": "user", "content": prompt}], max_completion_tokens=4000
@@ -216,11 +230,11 @@ def build_plan(task: str, products: list[dict], rng: random.Random, voucher_type
     threshold = rng.randint(int(total_price * (0.6 if compound else 0.1)), int(total_price * 0.9))
     desc = ("1. The voucher only applies to the products from the same shop."
             if voucher_type == "shop" else "1. The voucher applies to all products.")
-    desc += f"\n2. It is valid only when the total price of the products exceeds `{threshold}`."
+    desc += f"\n2. It is valid only when the total price of the products exceeds PHP `{threshold}`."
     if rng.random() < 0.5:
         face = rng.randint(int(threshold * 0.1), int(threshold * 0.5))
         after = total_price - face
-        desc += f"\n3. It provides a fixed discount of `{face}`."
+        desc += f"\n3. It provides a fixed discount of PHP `{face}`."
         voucher = {"discount_type": "fixed", "face_value": face, "discount": None, "cap": None}
     else:
         pct = rng.randint(10, 50)
@@ -228,12 +242,12 @@ def build_plan(task: str, products: list[dict], rng: random.Random, voucher_type
         if cap <= threshold * pct / 100.0:
             return None
         after = max(total_price * (1 - pct / 100.0), total_price - cap)
-        desc += f"\n3. It provides a percentage discount of `{pct}%` with a cap of `{cap}`."
+        desc += f"\n3. It provides a percentage discount of `{pct}%` with a cap of PHP `{cap}`."
         voucher = {"discount_type": "percentage", "face_value": None, "discount": pct / 100.0, "cap": cap}
     budget = math.ceil(after) + rng.randint(0, math.ceil(after * (0.03 if compound else 0.1)))
     voucher.update({"voucher_type": voucher_type, "threshold": threshold,
                     "price_after_voucher": after, "budget": budget})
-    external = f"My budget is only `{budget}`, but I have a voucher with the following rules:\n{desc}"
+    external = f"My budget is only PHP `{budget}`, but I have a voucher with the following rules:\n{desc}"
     task_text = ("one shop that sells all of these products, so that one same-shop voucher can be used"
                  if compound else "one or more products")
     return {"reward": rewards, "reqs": reqs, "task_text": task_text, "voucher": voucher,
@@ -271,6 +285,7 @@ def main() -> int:
             return None
         if not query:
             return None
+        query = normalize_currency(query)
         if plan.get("external"):
             query = f"{query}\n\n{plan['external']}"
         row = {"query": query, "reward": plan["reward"],

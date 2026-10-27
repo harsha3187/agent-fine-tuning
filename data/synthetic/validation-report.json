@@ -2,62 +2,29 @@
   "tasks": {
     "product": {
       "input": 500,
-      "kept": 498,
-      "dropped_reasons": {
-        "ambiguous_duplicate_title": 2
-      },
-      "reachability": {
-        "checked": 40,
-        "reachable": 40,
-        "misses": []
-      }
+      "kept": 500,
+      "dropped_reasons": {}
     },
     "shop": {
       "input": 514,
-      "kept": 499,
+      "kept": 511,
       "dropped_reasons": {
-        "ambiguous_duplicate_title": 15
-      },
-      "reachability": {
-        "checked": 120,
-        "reachable": 118,
-        "misses": [
-          "338432368",
-          "2850411132"
-        ]
+        "ambiguous_duplicate_title": 3
       }
     },
     "voucher": {
       "input": 520,
-      "kept": 468,
+      "kept": 471,
       "dropped_reasons": {
         "voucher_not_needed": 47,
-        "ambiguous_duplicate_title": 5
-      },
-      "reachability": {
-        "checked": 108,
-        "reachable": 104,
-        "misses": [
-          "4395978504",
-          "4573646146",
-          "4834231360",
-          "4508682404"
-        ]
+        "ambiguous_duplicate_title": 2
       }
     },
     "compound": {
       "input": 420,
-      "kept": 412,
+      "kept": 419,
       "dropped_reasons": {
-        "ambiguous_duplicate_title": 8
-      },
-      "reachability": {
-        "checked": 139,
-        "reachable": 137,
-        "misses": [
-          "4275073048",
-          "4228195609"
-        ]
+        "ambiguous_duplicate_title": 1
       }
     }
   }
