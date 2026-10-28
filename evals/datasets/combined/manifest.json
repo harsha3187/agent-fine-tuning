@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "files": {
+    "evals/datasets/combined/development/product.jsonl": "e04f1bfe48bcdd51e52426cb730778946a98b47b1deb5df9e099851df1aa71d2",
+    "evals/datasets/combined/development/shop.jsonl": "e0f8f18afc27d802fb53e25b6fc1cdb862ad3a9955159f1c802b5693f98bb2d0",
+    "evals/datasets/combined/development/voucher.jsonl": "48e7509cb701cb5d2b28b7b1fb8e9149e2ed23d5ba6b09bfe7dc260cca07dcc1",
+    "evals/datasets/combined/development/compound.jsonl": "f106cd7e2d7dfed06bf43b2a03855dc4cd71e8298c9ad32bf0dd5870ad8d024c",
+    "evals/datasets/combined/development/web.jsonl": "8aea8ef12a854d6ec458d03cd93fe8362f89191baeeb924dd2dc4e58155c4ff6",
+    "evals/datasets/combined/final/product.jsonl": "c3dcbdefdaf260a0c3e5b56856a496c9560686e3edea472ce5f2cf9a60338578",
+    "evals/datasets/combined/final/shop.jsonl": "d0db583f34411e219512ee6fd3c3cab04b56b90e57349207322b930ea53df3f6",
+    "evals/datasets/combined/final/voucher.jsonl": "e01a10fdca489abcfb738601643baa58c3c16b8c784b05e54364734f6d25a5ad",
+    "evals/datasets/combined/final/compound.jsonl": "0f9205a3672939556af5ecec568e5a4a9b5c84855f31e22c01a8284c4ab251c4",
+    "evals/datasets/combined/final/web.jsonl": "da6e556e940b84be256eadecc3f5825c92c6b6a719b2d0c3f10e33ceeb75c6b6"
+  },
+  "counts": {
+    "development/product": 69,
+    "development/shop": 84,
+    "development/voucher": 85,
+    "development/compound": 40,
+    "development/web": 30,
+    "final/product": 97,
+    "final/shop": 97,
+    "final/voucher": 94,
+    "final/compound": 51,
+    "final/web": 50
+  },
+  "documents": 25505
+}
